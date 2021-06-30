@@ -14,8 +14,7 @@ public class Main {
 
 			} while (token != null);
 		}
-		catch (Exception ex) {	
-			System.out.println("Generic Error!!");
+		catch (Exception ex) {
 		}
 	}
 }

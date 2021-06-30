@@ -37,8 +37,32 @@ public class LexScanner {
 			switch(estado) {
 			case 0:
 				if (letra(currentChar)) {
+					if(currentChar == 's') {
+						term += currentChar;
+						estado = 11;
+						break;
+					}
+					else if(currentChar == 'e') {
+						term += currentChar;
+						estado = 15;
+						break;
+					}
+					else {
 					term += currentChar;
 					estado = 1;
+					}
+				}
+				else if (comentario(currentChar)) {
+						if(comentario(prox())) {
+							estado = 17;
+						}
+				}
+				else if (delimitador(currentChar)) {
+					term += currentChar;	
+					token = new Token();
+					token.setType(Token.TK_DELIM);
+					token.setText(term);
+					return token;
 				}
 				else if (digito(currentChar)) {
 					term += currentChar;
@@ -111,6 +135,7 @@ public class LexScanner {
 					estado = 7;
 				}
 				break;
+				
 			case 7:
 				if (letra(currentChar) || digito(currentChar)) {
 					term += currentChar;
@@ -129,7 +154,6 @@ public class LexScanner {
 				token.setText(term);
 				return token;
 				
-			
 			case 9:
 				if (letra(currentChar) || digito(currentChar)) {
 					term += currentChar;
@@ -147,6 +171,100 @@ public class LexScanner {
 				token.setType(Token.TK_OPATRI);
 				token.setText(term);
 				return token;
+				
+			case 11:
+				if(letra(currentChar)) {
+					term += currentChar;
+					if(currentChar == 't') {
+						estado = 12;
+						break;
+					}
+					else {
+						estado = 1;
+						break;
+					}
+				}
+				
+			case 12:
+				if(letra(currentChar)) {
+					term += currentChar;
+					if(currentChar == 'a') {
+						estado = 13;
+						break;
+					}
+					else {
+						estado = 1;
+						break;
+					}
+				}
+				
+			case 13:
+				if(letra(currentChar)) {
+					term += currentChar;
+					if(currentChar == 'r') {
+						estado = 14;
+						break;
+					}
+					else {
+						estado = 1;
+						break;
+					}
+				}
+				
+			case 14:
+				if(letra(currentChar)) {
+					term += currentChar;
+					if(currentChar == 't') {
+						token = new Token();
+						token.setType(Token.TK_RESER);
+						token.setText(term);
+						return token;
+					}
+					else {
+						estado = 1;
+						break;
+					}
+				}
+			case 15:
+				if(letra(currentChar)) {
+					term += currentChar;
+					if(currentChar == 'n') {
+						estado = 16;
+						break;
+					}
+					else {
+						estado = 1;
+						break;
+					}
+				}
+			case 16:
+				if(letra(currentChar)) {
+					term += currentChar;
+					if(currentChar == 'd') {
+						token = new Token();
+						token.setType(Token.TK_RESER);
+						token.setText(term);
+						return token;
+					}
+					else {
+						estado = 1;
+						break;
+					}
+				}
+			case 17: 
+				while(currentChar != '*') {
+					term += currentChar;
+					break;
+				}
+				if(comentario(currentChar)) {
+					if(comentario(prox())) {
+						token = new Token();
+						token.setType(Token.TK_COMENT);
+						token.setText(term);
+						return token;
+					}
+				}
+				break;
 		    }
 		}
 	}
@@ -177,6 +295,14 @@ public class LexScanner {
 	
 	private boolean ponto(char c) {
 		return c == ';';
+	}
+	
+	private boolean comentario(char c) {
+		return c == '*';
+	}
+	
+	private boolean delimitador(char c) {
+		return c == ';' || c == '"' || c == ')' || c == '(' || c == '.' || c == '[' || c == ']';
 	}
 	
 	private boolean fim() {

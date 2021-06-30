@@ -4,8 +4,13 @@ public class Token {
 	public static final String TK_IDT  = "identificador";
 	public static final String TK_NUM = "numero";
 	public static final String TK_OPREL = "relacional";
-	public static final int TK_PONT = 3;
 	public static final String TK_OPATRI = "atribuicao";
+	public static final String TK_RESER = "reservada";
+	public static final String TK_COMENT = "comentario";
+	public static final String TK_DELIM = "delimitador";
+
+
+
 
 	private String type;
 	private String text;
